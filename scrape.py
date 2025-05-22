@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
-URL = "https://www.dhv-xc.de/xc/modules/leonardo/index.php?name=leonardo&op=clubs"
+URL = "https://de.dhv-xc.de/competition/urenschwang-cup#/tab/gesamt"
 HEADERS = {'User-Agent': 'Mozilla/5.0'}
 
 def scrape_dhvxc():
