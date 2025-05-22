@@ -1,8 +1,8 @@
-import requests
-from bs4 import BeautifulSoup
+ import asyncio
+from playwright.async_api import async_playwright
 import json
 
-URL = "https://de.dhv-xc.de/competition/urenschwang-cup#/tab/gesamt"
+URL = "https://www.dhv-xc.de/xc/modules/leonardo/index.php?name=leonardo&op=clubs"
 HEADERS = {'User-Agent': 'Mozilla/5.0'}
 
 def scrape_dhvxc():
@@ -29,8 +29,11 @@ def scrape_dhvxc():
                 'punkte': int(punkte) if punkte.isdigit() else 0
             })
 
-    with open('dhvxc-data.json', 'w', encoding='utf-8') as f:
-        json.dump(results, f, ensure_ascii=False, indent=2)
+        # Speichern der Daten in einer JSON-Datei
+        with open("dhvxc-data.json", "w", encoding="utf-8") as f:
+            json.dump(results, f, ensure_ascii=False, indent=2)
 
-if __name__ == "__main__":
-    scrape_dhvxc()
+        await browser.close()
+
+# Ausführen des Skripts
+asyncio.run(scrape_urenschwang_cup())
