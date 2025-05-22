@@ -40,3 +40,4 @@ jobs:
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/hvnnes05/DHVXC-Vereinswertung.git
           git push origin main
 
+
