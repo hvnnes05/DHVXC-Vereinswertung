@@ -1,54 +1,60 @@
-from playwright.sync_api import sync_playwright
+import asyncio
+from playwright.async_api import async_playwright
 import json
-import time
-import re
 
-URL = "https://de.dhv-xc.de/competition/urenschwang-cup#/tab/gesamt"
+# URLs für "gesamt" und "lokal"
+URLS = {
+    "gesamt": "https://de.dhv-xc.de/competition/vereinswertung#/tab/gesamt",
+    "lokal": "https://de.dhv-xc.de/competition/urenschwang-cup#/tab/huetten",
+}
 
-def extract_score(raw_text):
-    # Extrahiere die erste "xxx,xx"-Zahl nach dem Rang – das ist der Score
-    match = re.search(r'\d+,\d{2}', raw_text)
-    return match.group(0) if match else ""
+OUTPUT_FILES = {
+    "gesamt": "dhvxc-data.json",
+    "lokal": "dhvxc-data-lokal.json",
+}
 
-def run():
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
-        page.goto(URL)
+async def scrape(type_key: str):
+    url = URLS[type_key]
+    output_file = OUTPUT_FILES[type_key]
 
-        # Warte auf Tabelle
-        page.wait_for_selector("table")
-        time.sleep(5)
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
 
-        rows = page.query_selector_all("table tbody tr")
-        top_5 = []
+        print(f"Öffne {url} ...")
+        await page.goto(url)
 
-        for row in rows[:5]:
-            cells = row.query_selector_all("td")
+        # Warte, bis der Tab-Inhalt geladen ist (eventuell anpassen)
+        await page.wait_for_selector("table")  # je nach Seite anpassen
 
-            if len(cells) >= 5:
-                # Rang extrahieren (meist steht er in cell[1] als Text)
-                rank_text = cells[1].inner_text().strip()
-                rank = rank_text.split()[0] if rank_text else ""
+        # Scrape die Top 5 Zeilen der Tabelle
+        rows = await page.query_selector_all("table tbody tr")
+        data = []
 
-                # Pilot extrahieren
-                pilot_el = cells[2].query_selector("div > div") or cells[2]
-                pilot_name = pilot_el.inner_text().strip()
+        for i, row in enumerate(rows[:5]):
+            cols = await row.query_selector_all("td")
+            # Je nach Tabellenstruktur anpassen
+            rank = await cols[0].inner_text()
+            pilot = await cols[1].inner_text()
+            score = await cols[2].inner_text()
 
-                # Score extrahieren
-                raw_score = cells[4].inner_text().strip()
-                score = extract_score(raw_score)
+            data.append({
+                "RankNumber": rank.strip(),
+                "Pilot": pilot.strip(),
+                "Score": score.strip(),
+            })
 
-                top_5.append({
-                    "RankNumber": rank,
-                    "Pilot": pilot_name,
-                    "Score": score
-                })
+        await browser.close()
 
-        with open("dhvxc-data.json", "w", encoding="utf-8") as f:
-            json.dump(top_5, f, ensure_ascii=False, indent=2)
+    # Schreibe in JSON
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
-        browser.close()
+    print(f"{output_file} geschrieben.")
+
+async def main():
+    await scrape("gesamt")
+    await scrape("lokal")
 
 if __name__ == "__main__":
-    run()
+    asyncio.run(main())
