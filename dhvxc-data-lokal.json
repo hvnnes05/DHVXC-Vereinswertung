@@ -1,1 +1,27 @@
-
+[
+  {
+    "RankNumber": "1",
+    "Pilot": "Horst Friedrich Kiem",
+    "Score": "938,27"
+  },
+  {
+    "RankNumber": "2",
+    "Pilot": "Niklas Flechsler",
+    "Score": "416,91"
+  },
+  {
+    "RankNumber": "3",
+    "Pilot": "Felix Friedrich Kiem",
+    "Score": "283,26"
+  },
+  {
+    "RankNumber": "4",
+    "Pilot": "Thomas Authaler",
+    "Score": "241,66"
+  },
+  {
+    "RankNumber": "5",
+    "Pilot": "Gero Flechsler",
+    "Score": "189,76"
+  }
+]
