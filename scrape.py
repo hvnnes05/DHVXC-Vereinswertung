@@ -3,16 +3,26 @@ import json
 import time
 import re
 
-URL_GESAMT = "https://de.dhv-xc.de/competition/urenschwang-cup#/tab/gesamt"
-URL_HUETTEN = "https://de.dhv-xc.de/competition/urenschwang-cup#/tab/huetten"
+URLS = {
+    "gesamt": "https://de.dhv-xc.de/competition/urenschwang-cup#/tab/gesamt",
+    "huetten": "https://de.dhv-xc.de/competition/urenschwang-cup#/tab/huetten"
+}
+
+OUTPUT_FILES = {
+    "gesamt": "dhvxc-data.json",
+    "huetten": "dhvxc-data-lokal.json"
+}
 
 def extract_score(raw_text):
     # Extrahiere die erste "xxx,xx"-Zahl nach dem Rang – das ist der Score
     match = re.search(r'\d+,\d{2}', raw_text)
     return match.group(0) if match else ""
 
-def scrape_top_5(page, url):
-    page.goto(url)
+def scrape_tab(page, tab_name):
+    print(f"Scraping {tab_name} tab...")
+    
+    page.goto(URLS[tab_name])
+    
     # Warte auf Tabelle
     page.wait_for_selector("table")
     time.sleep(5)
@@ -41,23 +51,26 @@ def scrape_top_5(page, url):
                 "Pilot": pilot_name,
                 "Score": score
             })
+
+    # In entsprechende Datei speichern
+    with open(OUTPUT_FILES[tab_name], "w", encoding="utf-8") as f:
+        json.dump(top_5, f, ensure_ascii=False, indent=2)
+    
+    print(f"Data saved to {OUTPUT_FILES[tab_name]}")
     return top_5
 
 def run():
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
-
-        # Daten von "gesamt"-Tab
-        data_gesamt = scrape_top_5(page, URL_GESAMT)
-        with open("dhvxc-data.json", "w", encoding="utf-8") as f:
-            json.dump(data_gesamt, f, ensure_ascii=False, indent=2)
-
-        # Daten von "huetten"-Tab
-        data_huetten = scrape_top_5(page, URL_HUETTEN)
-        with open("dhvxc-data-lokal.json", "w", encoding="utf-8") as f:
-            json.dump(data_huetten, f, ensure_ascii=False, indent=2)
-
+        
+        # Scrape beide Tabs
+        gesamt_data = scrape_tab(page, "gesamt")
+        huetten_data = scrape_tab(page, "huetten")
+        
+        print(f"\nGesamt tab: {len(gesamt_data)} entries scraped")
+        print(f"Huetten tab: {len(huetten_data)} entries scraped")
+        
         browser.close()
 
 if __name__ == "__main__":
