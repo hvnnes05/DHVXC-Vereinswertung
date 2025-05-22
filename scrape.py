@@ -1,33 +1,31 @@
- import asyncio
+import asyncio
 from playwright.async_api import async_playwright
 import json
 
-URL = "https://www.dhv-xc.de/xc/modules/leonardo/index.php?name=leonardo&op=clubs"
-HEADERS = {'User-Agent': 'Mozilla/5.0'}
+async def scrape_urenschwang_cup():
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
+        await page.goto("https://de.dhv-xc.de/competition/urenschwang-cup#/tab/gesamt", wait_until="networkidle")
 
-def scrape_dhvxc():
-    response = requests.get(URL, headers=HEADERS)
-    soup = BeautifulSoup(response.text, 'html.parser')
+        # Warten, bis die Tabelle geladen ist
+        await page.wait_for_selector("table")
 
-    table = soup.find('table')
-    if not table:
-        print("❌ Tabelle nicht gefunden")
-        return
+        # Extrahieren der Tabellenzeilen
+        rows = await page.query_selector_all("table tbody tr")
+        results = []
 
-    rows = table.find_all('tr')[1:]
-
-    results = []
-    for row in rows:
-        cols = row.find_all('td')
-        if len(cols) >= 3:
-            platz = cols[0].text.strip()
-            verein = cols[1].text.strip()
-            punkte = cols[2].text.strip().replace('.', '')
-            results.append({
-                'platz': int(platz),
-                'verein': verein,
-                'punkte': int(punkte) if punkte.isdigit() else 0
-            })
+        for row in rows:
+            cells = await row.query_selector_all("td")
+            if len(cells) >= 3:
+                platz = await cells[0].inner_text()
+                verein = await cells[1].inner_text()
+                punkte = await cells[2].inner_text()
+                results.append({
+                    "platz": platz.strip(),
+                    "verein": verein.strip(),
+                    "punkte": punkte.strip()
+                })
 
         # Speichern der Daten in einer JSON-Datei
         with open("dhvxc-data.json", "w", encoding="utf-8") as f:
