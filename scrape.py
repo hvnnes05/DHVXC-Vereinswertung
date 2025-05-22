@@ -1,37 +1,44 @@
-import asyncio
-from playwright.async_api import async_playwright
+from playwright.sync_api import sync_playwright
 import json
+import time
 
-async def scrape_urenschwang_cup():
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page()
-        await page.goto("https://de.dhv-xc.de/competition/urenschwang-cup#/tab/gesamt", wait_until="networkidle")
+URL = "https://de.dhv-xc.de/competition/urenschwang-cup#/tab/gesamt"
 
-        # Warten, bis die Tabelle geladen ist
-        await page.wait_for_selector("table")
+def run():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        page.goto(URL)
 
-        # Extrahieren der Tabellenzeilen
-        rows = await page.query_selector_all("table tbody tr")
-        results = []
+        # Warte auf die Tabelle, z. B. die Klassentabelle mit Rangliste
+        page.wait_for_selector("table")
 
-        for row in rows:
-            cells = await row.query_selector_all("td")
-            if len(cells) >= 3:
-                platz = await cells[0].inner_text()
-                verein = await cells[1].inner_text()
-                punkte = await cells[2].inner_text()
-                results.append({
-                    "platz": platz.strip(),
-                    "verein": verein.strip(),
-                    "punkte": punkte.strip()
+        # Warte etwas länger, falls dynamisch nachgeladen wird
+        time.sleep(5)
+
+        # Selektiere die Tabellenzeilen der Rangliste
+        rows = page.query_selector_all("table tbody tr")
+
+        top_5 = []
+
+        for row in rows[:5]:
+            cells = row.query_selector_all("td")
+
+            if len(cells) >= 5:
+                rank = cells[0].inner_text().strip()
+                pilot = cells[2].inner_text().strip()
+                score = cells[4].inner_text().strip()
+
+                top_5.append({
+                    "ranknumber": rank,
+                    "pilot": pilot,
+                    "score": score
                 })
 
-        # Speichern der Daten in einer JSON-Datei
         with open("dhvxc-data.json", "w", encoding="utf-8") as f:
-            json.dump(results, f, ensure_ascii=False, indent=2)
+            json.dump(top_5, f, ensure_ascii=False, indent=2)
 
-        await browser.close()
+        browser.close()
 
-# Ausführen des Skripts
-asyncio.run(scrape_urenschwang_cup())
+if __name__ == "__main__":
+    run()
