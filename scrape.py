@@ -26,20 +26,45 @@ def scrape_tab(page, tab_name):
         page.goto(URLS[tab_name], wait_until="networkidle", timeout=30000)
         print(f"Seite geladen: {URLS[tab_name]}")
         
-        # Warte auf Tabelle mit längerer Wartezeit
+        # Warte auf die Seite und dann explizit auf den Tab-Inhalt
         print("Warte auf Tabelle...")
         page.wait_for_selector("table", timeout=15000)
-        time.sleep(8)  # Längere Wartezeit für dynamische Inhalte
+        
+        # Zusätzliche Wartezeit und prüfe auf Tab-spezifische Inhalte
+        time.sleep(5)
+        
+        # Warte bis sich der Tab-Inhalt geändert hat
+        if tab_name == "huetten":
+            # Für huetten Tab - warte auf spezifische Inhalte oder klicke Tab
+            try:
+                # Versuche den Tab-Button zu finden und zu klicken
+                tab_button = page.query_selector('a[href*="huetten"], button:has-text("Hütten"), [data-tab="huetten"]')
+                if tab_button:
+                    print("Klicke auf Hütten-Tab...")
+                    tab_button.click()
+                    time.sleep(3)
+            except:
+                print("Tab-Button nicht gefunden, verwende URL-Navigation")
+        
+        # Nochmal warten bis Tabelle aktualisiert ist
+        time.sleep(5)
         
         # Prüfe ob Tabelle Daten hat
         rows = page.query_selector_all("table tbody tr")
-        print(f"Gefundene Zeilen: {len(rows)}")
+        print(f"Gefundene Zeilen für {tab_name}: {len(rows)}")
         
         if len(rows) == 0:
             print("Keine Tabellenzeilen gefunden!")
             # Versuche alternative Selektoren
             rows = page.query_selector_all("table tr")
             print(f"Alternative Suche - Gefundene Zeilen: {len(rows)}")
+        
+        # Debug: Zeige ersten Eintrag zur Verifizierung
+        if len(rows) > 0:
+            first_row_cells = rows[0].query_selector_all("td")
+            if len(first_row_cells) > 2:
+                first_pilot = first_row_cells[2].inner_text().strip()
+                print(f"Erster Pilot in {tab_name} Tab: '{first_pilot}'")
         
         top_5 = []
 
@@ -104,13 +129,37 @@ def run():
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
             })
             
-            # Scrape beide Tabs
+            # Scrape beide Tabs mit separaten Browser-Instanzen für bessere Isolation
+            print("=== SCRAPING GESAMT TAB ===")
             gesamt_data = scrape_tab(page, "gesamt")
-            huetten_data = scrape_tab(page, "huetten")
+            
+            # Kurze Pause zwischen den Tabs
+            print("\n=== PAUSE ZWISCHEN TABS ===")
+            time.sleep(3)
+            
+            # Neue Seite für zweiten Tab um sicherzustellen dass Inhalte nicht verwechselt werden
+            print("=== SCRAPING HUETTEN TAB ===")  
+            page2 = browser.new_page()
+            page2.set_extra_http_headers({
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            })
+            huetten_data = scrape_tab(page2, "huetten")
             
             print(f"\n=== ZUSAMMENFASSUNG ===")
             print(f"Gesamt tab: {len(gesamt_data)} entries scraped")
             print(f"Huetten tab: {len(huetten_data)} entries scraped")
+            
+            # Vergleiche die ersten Einträge um sicherzustellen dass sie unterschiedlich sind
+            if len(gesamt_data) > 0 and len(huetten_data) > 0:
+                gesamt_first = gesamt_data[0].get("Pilot", "")
+                huetten_first = huetten_data[0].get("Pilot", "")
+                print(f"Erster Pilot Gesamt: '{gesamt_first}'")
+                print(f"Erster Pilot Hütten: '{huetten_first}'")
+                
+                if gesamt_first == huetten_first:
+                    print("WARNUNG: Beide Listen scheinen identisch zu sein!")
+                else:
+                    print("✓ Listen sind unterschiedlich")
             
             browser.close()
             
