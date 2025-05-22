@@ -1,82 +1,27 @@
 [
   {
-    "platz": "",
-    "verein": "1",
-    "punkte": "Horst Friedrich Kiem"
+    "ranknumber": "",
+    "pilot": "Horst Friedrich Kiem",
+    "score": "1\n                                938,27 \n                            \n                            \n                                \n            \n                 Horst Friedrich Kiem\n            \n        \n                                386,73363,25188,29"
   },
   {
-    "platz": "",
-    "verein": "2",
-    "punkte": "Niklas Flechsler"
+    "ranknumber": "",
+    "pilot": "Niklas Flechsler",
+    "score": "2\n                                416,91 \n                            \n                            \n                                \n            \n                 Niklas Flechsler\n            \n        \n                                245,07132,0339,82"
   },
   {
-    "platz": "",
-    "verein": "3",
-    "punkte": "Felix Friedrich Kiem"
+    "ranknumber": "",
+    "pilot": "Felix Friedrich Kiem",
+    "score": "3\n                                283,26 \n                            \n                            \n                                \n            \n                 Felix Friedrich Kiem\n            \n        \n                                259,1822,601,47"
   },
   {
-    "platz": "",
-    "verein": "4",
-    "punkte": "Thomas Authaler"
+    "ranknumber": "",
+    "pilot": "Thomas Authaler",
+    "score": "4\n                                241,66 \n                            \n                            \n                                \n            \n                 Thomas Authaler\n            \n        \n                                126,87114,79"
   },
   {
-    "platz": "",
-    "verein": "5",
-    "punkte": "Gero Flechsler"
-  },
-  {
-    "platz": "",
-    "verein": "6",
-    "punkte": "Markus Bosch"
-  },
-  {
-    "platz": "",
-    "verein": "7",
-    "punkte": "Hilmar Sirch"
-  },
-  {
-    "platz": "",
-    "verein": "8",
-    "punkte": "Hannes Müller"
-  },
-  {
-    "platz": "",
-    "verein": "9",
-    "punkte": "David Jäckel"
-  },
-  {
-    "platz": "",
-    "verein": "10",
-    "punkte": "Ralf Straub"
-  },
-  {
-    "platz": "",
-    "verein": "11",
-    "punkte": "Norbert Johna"
-  },
-  {
-    "platz": "",
-    "verein": "12",
-    "punkte": "Markus Straub"
-  },
-  {
-    "platz": "",
-    "verein": "13",
-    "punkte": "Axel Schaz"
-  },
-  {
-    "platz": "",
-    "verein": "14",
-    "punkte": "Michael Haag"
-  },
-  {
-    "platz": "",
-    "verein": "15",
-    "punkte": "Jörg König"
-  },
-  {
-    "platz": "",
-    "verein": "16",
-    "punkte": "Markus Müller"
+    "ranknumber": "",
+    "pilot": "Gero Flechsler",
+    "score": "5\n                                189,76 \n                            \n                            \n                                \n            \n                 Gero Flechsler\n            \n        \n                                98,0691,70"
   }
 ]
