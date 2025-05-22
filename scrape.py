@@ -1,8 +1,14 @@
 from playwright.sync_api import sync_playwright
 import json
 import time
+import re
 
 URL = "https://de.dhv-xc.de/competition/urenschwang-cup#/tab/gesamt"
+
+def extract_score(raw_text):
+    # Extrahiere die erste "xxx,xx"-Zahl nach dem Rang – das ist der Score
+    match = re.search(r'\d+,\d{2}', raw_text)
+    return match.group(0) if match else ""
 
 def run():
     with sync_playwright() as p:
@@ -12,11 +18,8 @@ def run():
 
         # Warte auf Tabelle
         page.wait_for_selector("table")
-
-        # Zusätzliche Wartezeit, da dynamisch geladen wird
         time.sleep(5)
 
-        # Zeilen auslesen
         rows = page.query_selector_all("table tbody tr")
         top_5 = []
 
@@ -24,24 +27,24 @@ def run():
             cells = row.query_selector_all("td")
 
             if len(cells) >= 5:
-                # Hole rank aus der ersten Zelle
-                rank = cells[0].inner_text().strip()
+                # Rang extrahieren (meist steht er in cell[1] als Text)
+                rank_text = cells[1].inner_text().strip()
+                rank = rank_text.split()[0] if rank_text else ""
 
-                # Hole pilot aus der dritten Zelle (aber nur reinen Namen)
-                pilot = cells[2].query_selector("div > div")  # Spezifischer
-                pilot_name = pilot.inner_text().strip() if pilot else cells[2].inner_text().strip()
+                # Pilot extrahieren
+                pilot_el = cells[2].query_selector("div > div") or cells[2]
+                pilot_name = pilot_el.inner_text().strip()
 
-                # Hole score aus der fünften Zelle – oft steht der Hauptwert in <strong> oder ähnlichem
-                score_el = cells[4].query_selector("strong") or cells[4]
-                score_text = score_el.inner_text().strip()
+                # Score extrahieren
+                raw_score = cells[4].inner_text().strip()
+                score = extract_score(raw_score)
 
                 top_5.append({
                     "RankNumber": rank,
                     "Pilot": pilot_name,
-                    "Score": score_text
+                    "Score": score
                 })
 
-        # Speichern
         with open("dhvxc-data.json", "w", encoding="utf-8") as f:
             json.dump(top_5, f, ensure_ascii=False, indent=2)
 
