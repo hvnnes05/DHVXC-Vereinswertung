@@ -1,17 +1,17 @@
 [
   {
     "RankNumber": "1",
+    "Pilot": "Felix Friedrich Kiem",
+    "Score": "4,58"
+  },
+  {
+    "RankNumber": "2",
     "Pilot": "Horst Friedrich Kiem",
     "Score": "4,54"
   },
   {
-    "RankNumber": "2",
+    "RankNumber": "3",
     "Pilot": "Ralf Straub",
     "Score": "3,03"
-  },
-  {
-    "RankNumber": "3",
-    "Pilot": "Felix Friedrich Kiem",
-    "Score": "2,85"
   }
 ]
