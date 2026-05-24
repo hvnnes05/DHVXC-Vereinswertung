@@ -1,17 +1,22 @@
 [
   {
     "RankNumber": "1",
-    "Pilot": "Felix Friedrich Kiem",
-    "Score": "4,58"
+    "Pilot": "Horst Friedrich Kiem",
+    "Score": "4,75"
   },
   {
     "RankNumber": "2",
-    "Pilot": "Horst Friedrich Kiem",
-    "Score": "4,54"
+    "Pilot": "Felix Friedrich Kiem",
+    "Score": "4,58"
   },
   {
     "RankNumber": "3",
     "Pilot": "Ralf Straub",
     "Score": "3,03"
+  },
+  {
+    "RankNumber": "4",
+    "Pilot": "Thomas Mann",
+    "Score": "0,86"
   }
 ]
