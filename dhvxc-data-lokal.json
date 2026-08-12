@@ -16,6 +16,11 @@
   },
   {
     "RankNumber": "4",
+    "Pilot": "Markus Straub",
+    "Score": "2,45"
+  },
+  {
+    "RankNumber": "5",
     "Pilot": "Thomas Mann",
     "Score": "0,86"
   }
