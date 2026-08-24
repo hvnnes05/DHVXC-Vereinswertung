@@ -6,18 +6,18 @@
   },
   {
     "RankNumber": "2",
+    "Pilot": "Markus Straub",
+    "Score": "4,84"
+  },
+  {
+    "RankNumber": "3",
     "Pilot": "Felix Friedrich Kiem",
     "Score": "4,58"
   },
   {
-    "RankNumber": "3",
+    "RankNumber": "4",
     "Pilot": "Ralf Straub",
     "Score": "3,32"
-  },
-  {
-    "RankNumber": "4",
-    "Pilot": "Markus Straub",
-    "Score": "2,45"
   },
   {
     "RankNumber": "5",
