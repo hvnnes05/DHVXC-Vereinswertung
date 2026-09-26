@@ -2,11 +2,16 @@
   {
     "RankNumber": "1",
     "Pilot": "Markus Straub",
-    "Score": "66,94"
+    "Score": "67,79"
   },
   {
     "RankNumber": "2",
     "Pilot": "Ralf Straub",
     "Score": "23,77"
+  },
+  {
+    "RankNumber": "3",
+    "Pilot": "Horst Friedrich Kiem",
+    "Score": "1,76"
   }
 ]
