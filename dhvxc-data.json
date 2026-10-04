@@ -11,17 +11,17 @@
   },
   {
     "RankNumber": "3",
+    "Pilot": "Horst Friedrich Kiem",
+    "Score": "59,83"
+  },
+  {
+    "RankNumber": "4",
     "Pilot": "Ralf Straub",
     "Score": "36,65"
   },
   {
-    "RankNumber": "4",
+    "RankNumber": "5",
     "Pilot": "Niklas Flechsler",
     "Score": "14,13"
-  },
-  {
-    "RankNumber": "5",
-    "Pilot": "Michael Haag",
-    "Score": "10,97"
   }
 ]
