@@ -1,18 +1,18 @@
 [
   {
     "RankNumber": "1",
+    "Pilot": "Horst Friedrich Kiem",
+    "Score": "121,62"
+  },
+  {
+    "RankNumber": "2",
     "Pilot": "David Jäckel",
     "Score": "103,23"
   },
   {
-    "RankNumber": "2",
-    "Pilot": "Markus Straub",
-    "Score": "70,69"
-  },
-  {
     "RankNumber": "3",
-    "Pilot": "Horst Friedrich Kiem",
-    "Score": "59,83"
+    "Pilot": "Markus Straub",
+    "Score": "86,97"
   },
   {
     "RankNumber": "4",
